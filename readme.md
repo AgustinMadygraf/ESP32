@@ -8,7 +8,9 @@ Este proyecto proporciona una interfaz web simple para controlar un motor utiliz
 ESP32/
     DOCS/
     esp32cam/
+        esp32cam.ino
     esp32wroom/
+        esp32wroom.ino
     public/
         index.html
         upload.php
@@ -45,68 +47,6 @@ El script `upload.php` se utiliza para subir imágenes desde el ESP32. Sigue est
 1. Configura tu ESP32 para capturar imágenes y enviarlas a `http://localhost/ESP32/public/upload.php`.
 2. Asegúrate de que las imágenes se guarden en la carpeta `uploads` con un nombre único basado en la fecha y hora.
 
-## Ejemplo de Código para el ESP32
-
-Aquí tienes un ejemplo de cómo configurar el ESP32 para enviar una imagen al servidor:
-
-```cpp
-#include <WiFi.h>
-#include <WiFiClientSecure.h>
-#include <ESP32HTTPClient.h>
-
-// Configura tu red WiFi y la URL del servidor
-const char* ssid = "TU_SSID";
-const char* password = "TU_PASSWORD";
-const char* serverName = "http://localhost/ESP32/public/upload.php";
-
-void setup() {
-    Serial.begin(115200);
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(1000);
-        Serial.println("Connecting to WiFi...");
-    }
-    Serial.println("Connected to WiFi");
-
-    // Captura la imagen y súbela al servidor
-    captureAndUploadImage();
-}
-
-void captureAndUploadImage() {
-    // Captura de imagen no mostrada aquí
-    // Supón que la imagen se guarda en un archivo llamado "image.jpg"
-    
-    if (WiFi.status() == WL_CONNECTED) {
-        HTTPClient http;
-        http.begin(serverName);
-        http.addHeader("Content-Type", "multipart/form-data");
-
-        File imageFile = SPIFFS.open("/image.jpg", "r");
-        if (!imageFile) {
-            Serial.println("Failed to open image file");
-            return;
-        }
-
-        int httpResponseCode = http.POST(imageFile);
-        if (httpResponseCode > 0) {
-            String response = http.getString();
-            Serial.println(httpResponseCode);
-            Serial.println(response);
-        } else {
-            Serial.print("Error on sending POST: ");
-            Serial.println(httpResponseCode);
-        }
-        http.end();
-        imageFile.close();
-    } else {
-        Serial.println("WiFi not connected");
-    }
-}
-
-void loop() {
-    // No es necesario hacer nada aquí
-}
-```
 
 ## Contribuciones
 
