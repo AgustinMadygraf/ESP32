@@ -10,7 +10,7 @@ const char* password = "Madygraf32";
 // Configura los pines de salida
 const int pinOutput_ENA = 18; // enciende el motor con LOW
 const int pinOutput_DIR = 19; // sentido de giro
-const int pinOutput_PUL = 21; // pulso, debe tener 1000 microsegundos entre semiciclo positivo y negativo
+const int pinOutput_PUL = 21; // pulso,  debe tener 1000 microsegundos entre semiciclo positivo y negativo
 
 WebServer server(80);
 
