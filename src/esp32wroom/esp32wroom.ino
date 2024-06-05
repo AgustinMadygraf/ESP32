@@ -75,7 +75,7 @@ void setup() {
   server.on("/ena_r", handleOutputENA_r);
 
   server.begin();
-  Serial.println("HTTP server started");
+  Serial.println("HTTP server started"); //iniciando
 }
 
 void loop() {
