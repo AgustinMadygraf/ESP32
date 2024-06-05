@@ -1,5 +1,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
+#include "HX711.h"
+
 
 // Configura el SSID y la contraseña de tu red WiFi
 const char* ssid = "Aula tecnica";
