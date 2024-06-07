@@ -193,7 +193,7 @@ void loop() {
   lcd.print("Peso: ");
   lcd.print(peso, 0);
   lcd.print(" g        ");
-  delay(5);
+  delay(500);
 
   lcd.setCursor(0, 0);
   lcd.print("Motor en espera ");
