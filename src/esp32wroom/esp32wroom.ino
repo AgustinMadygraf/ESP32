@@ -40,6 +40,8 @@ void handleRoot() {
 }
 
 void handleOutputENA_f() {
+  lcd.setCursor(0, 0);
+  lcd.print("Motor en avance ");
   digitalWrite(pinOutput_ENA, LOW); // ENA se enciende con LOW
   digitalWrite(pinOutput_DIR, LOW); //Forward
   server.send(200, "text/plain", "Motor en Marcha");
@@ -53,16 +55,19 @@ void handleOutputENA_f() {
 }
 
 void handleOutputENA_r() {
+  lcd.setCursor(0, 0);
+  lcd.print("Motor en retroceso");
   digitalWrite(pinOutput_ENA, LOW); // ENA se apaga con HIGH
   digitalWrite(pinOutput_DIR, HIGH); //Reverse
   server.send(200, "text/plain", "Motor en Reversa");
-    for (int i = 0; i < 200; i++) {
+  for (int i = 0; i < 200; i++) {
     digitalWrite(pinOutput_PUL, HIGH);
     delayMicroseconds(1000);
     digitalWrite(pinOutput_PUL, LOW);
     delayMicroseconds(1000);
   }
 }
+
 
 
 
@@ -85,7 +90,7 @@ void calibration() { // despues de hacer la calibracion puedes borrar toda la fu
   //Iniciando calibración
   while (conf == true) {
 
-    lcd.setCursor(1, 0);
+    lcd.setCursor(0, 1);
     lcd.print("Peso referencial:");
     lcd.setCursor(1, 1);
     lcd.print(peso_calibracion);
@@ -184,11 +189,15 @@ void loop() {
   peso = balanza.get_units(10);  //Mide el peso de la balanza
 
   //Muestra el peso
-  lcd.setCursor(1, 0);
+  lcd.setCursor(0, 1);
   lcd.print("Peso: ");
   lcd.print(peso, 0);
-  lcd.println(" g        ");
+  lcd.print(" g        ");
   delay(5);
+
+  lcd.setCursor(0, 0);
+  lcd.print("Motor en espera ");
+
 
   //Botón de zero, esto sirve para restar el peso de un recipiente 
   if ( state_zero != last_state_zero) {
