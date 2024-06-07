@@ -36,7 +36,9 @@ int last_state_zero = 0;
 
 
 void handleRoot() {
-  server.send(200, "text/plain", "ESP32 Web Server");
+  float peso_mostrar;
+  peso_mostrar = balanza.get_units(10);
+  server.send(200, "text/plain", "ESP32 Web Server \n Peso: " + String(peso_mostrar) + " g");
 }
 
 void handleOutputENA_f() {
