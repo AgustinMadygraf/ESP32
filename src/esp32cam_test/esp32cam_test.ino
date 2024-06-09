@@ -4,6 +4,7 @@
 
 void setup() {
     pinMode(LED_PIN, OUTPUT); // Configura el pin como salida
+    Serial.begin(115200);
 }
 
 void loop() {
@@ -11,6 +12,6 @@ void loop() {
     delay(1000); // Espera un segundo
     digitalWrite(LED_PIN, LOW); // Apaga el LED
     delay(1000); // Espera un segundo
-    
+    Serial.println("Hola mundo");
 }
 
