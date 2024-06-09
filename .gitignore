@@ -5,3 +5,9 @@ src/esp32cam_test/.vscode/.browse.c_cpp.db*
 src/esp32cam_test/.vscode/c_cpp_properties.json
 src/esp32cam_test/.vscode/launch.json
 src/esp32cam_test/.vscode/ipch
+src/esp32cam/.vscode/extensions.json
+src/esp32cam/.pio
+src/esp32cam/.vscode/.browse.c_cpp.db*
+src/esp32cam/.vscode/c_cpp_properties.json
+src/esp32cam/.vscode/launch.json
+src/esp32cam/.vscode/ipch
