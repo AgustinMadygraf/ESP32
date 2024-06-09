@@ -32,10 +32,8 @@ void setup() {
 void loop() {
     // Enciende el LED si el pin 0 está en estado bajo
     if (digitalRead(BUTTON_PIN) == LOW) {
-        Serial.println("Botón presionado");
         digitalWrite(LED_PIN, HIGH);
-        //tomar una foto
-        
+        Serial.println("Botón presionado");
     } else {
         digitalWrite(LED_PIN, LOW);
     }
