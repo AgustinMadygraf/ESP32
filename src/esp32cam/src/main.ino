@@ -1,22 +1,11 @@
-/*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp32-cam-post-image-photo-server/
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*/
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include "esp_camera.h"
 
-const char* ssid = "Aula tecnica";
-const char* password = "Madygraf32";
+const char* ssid = "Fibertel WiFi283 2.4GHz";
+const char* password = "00436528392";
 
 String serverName = "192.168.1.116";   // REPLACE WITH YOUR Raspberry Pi IP ADDRESS
 //String serverName = "example.com";   // OR REPLACE WITH YOUR DOMAIN NAME
@@ -55,7 +44,7 @@ void setup() {
   Serial.println();
   Serial.println();
   Serial.println();
-  Serial.println("initiating...");
+  Serial.println("Initiating...");
   WiFi.mode(WIFI_STA);
   Serial.println();
   Serial.print("Connecting to ");
@@ -69,7 +58,6 @@ void setup() {
   Serial.print("ESP32-CAM IP Address: ");
   Serial.println(WiFi.localIP());
 
-    // Configurar el pin del flash como salida
   pinMode(FLASH_GPIO_NUM, OUTPUT);
   
   camera_config_t config;
@@ -87,50 +75,45 @@ void setup() {
   config.pin_pclk = PCLK_GPIO_NUM;
   config.pin_vsync = VSYNC_GPIO_NUM;
   config.pin_href = HREF_GPIO_NUM;
-  config.pin_sscb_sda = SIOD_GPIO_NUM;
-  config.pin_sscb_scl = SIOC_GPIO_NUM;
+  config.pin_sccb_sda = SIOD_GPIO_NUM; // Cambiado de pin_sscb_sda
+  config.pin_sccb_scl = SIOC_GPIO_NUM; // Cambiado de pin_sscb_scl
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG;
 
-  // init with high specs to pre-allocate larger buffers
-  if(psramFound()){
+  if (psramFound()) {
     config.frame_size = FRAMESIZE_QVGA;
-    config.jpeg_quality = 10;  //0-63 lower number means higher quality
+    config.jpeg_quality = 10;  // 0-63 lower number means higher quality
     config.fb_count = 2;
     Serial.println("PSRAM found");
   } else {
     config.frame_size = FRAMESIZE_CIF;
-    config.jpeg_quality = 12;  //0-63 lower number means higher quality
+    config.jpeg_quality = 12;  // 0-63 lower number means higher quality
     config.fb_count = 1;
     Serial.println("PSRAM not found");
   }
   Serial.printf("\nFrame size: %d", config.frame_size);
   Serial.println();
 
-// Inicialización de la cámara
-Serial.println("Iniciando cámara...");
-esp_err_t err = esp_camera_init(&config);
+  Serial.println("Iniciando cámara...");
+  esp_err_t err = esp_camera_init(&config);
 
-if (err != ESP_OK) {
+  if (err != ESP_OK) {
     Serial.printf("La inicialización de la cámara falló con el error 0x%x. ", err);
     Serial.println("Reiniciando...");
-    Serial.println();
     delay(1000);
     ESP.restart();
-} else {
+  } else {
     Serial.println("¡Cámara Inicializada!");
-}
+  }
 }
 
 void loop() {
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= timerInterval) {
-    // Imprimir la cantidad de memoria libre antes de intentar capturar una imagen
     Serial.printf("Memoria libre antes de capturar la imagen: %u bytes\n", esp_get_free_heap_size());
     sendPhoto();
-    // Imprimir la cantidad de memoria libre después de intentar capturar una imagen
     Serial.printf("Memoria libre después de capturar la imagen: %u bytes\n", esp_get_free_heap_size());
     previousMillis = currentMillis;
   }
@@ -140,20 +123,15 @@ String sendPhoto() {
   String getAll;
   String getBody;
 
-  // Apagar el flash inicialmente
   digitalWrite(FLASH_GPIO_NUM, HIGH); // Enciende el flash
-  delay(1);
+  delay(50); // Asegurarse de que el flash esté encendido antes de capturar
+  camera_fb_t *fb = esp_camera_fb_get();
   digitalWrite(FLASH_GPIO_NUM, LOW);  // Apaga el flash
 
-  camera_fb_t * fb = NULL;
-  fb = esp_camera_fb_get();
-  if(!fb) {
+  if (!fb) {
     Serial.println("Camera capture failed");
     Serial.println("Reiniciando...");
-    Serial.println();
-    Serial.println();
-    Serial.println();
-    Serial.println();
+    delay(1000);
     ESP.restart();
   }
   
@@ -177,16 +155,15 @@ String sendPhoto() {
   
     uint8_t *fbBuf = fb->buf;
     size_t fbLen = fb->len;
-    for (size_t n=0; n<fbLen; n=n+1024) {
-      if (n+1024 < fbLen) {
+    for (size_t n = 0; n < fbLen; n += 1024) {
+      if (n + 1024 < fbLen) {
         client.write(fbBuf, 1024);
         fbBuf += 1024;
-      }
-      else if (fbLen%1024>0) {
-        size_t remainder = fbLen%1024;
+      } else if (fbLen % 1024 > 0) {
+        size_t remainder = fbLen % 1024;
         client.write(fbBuf, remainder);
       }
-    }   
+    }
     client.print(tail);
     
     esp_camera_fb_return(fb);
@@ -201,21 +178,19 @@ String sendPhoto() {
       while (client.available()) {
         char c = client.read();
         if (c == '\n') {
-          if (getAll.length()==0) { state=true; }
+          if (getAll.length() == 0) { state = true; }
           getAll = "";
-        }
-        else if (c != '\r') { getAll += String(c); }
-        if (state==true) { getBody += String(c); }
+        } else if (c != '\r') { getAll += String(c); }
+        if (state == true) { getBody += String(c); }
         startTimer = millis();
       }
-      if (getBody.length()>0) { break; }
+      if (getBody.length() > 0) { break; }
     }
     Serial.println();
     client.stop();
     Serial.println(getBody);
-  }
-  else {
-    getBody = "Connection to " + serverName +  " failed.";
+  } else {
+    getBody = "Connection to " + serverName + " failed.";
     Serial.println(getBody);
   }
   return getBody;
