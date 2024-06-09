@@ -1,1 +1,7 @@
 DOCS/00-Prompt-for-ProjectAnalysis.md
+src/esp32cam_test/.vscode/extensions.json
+src/esp32cam_test/.pio
+src/esp32cam_test/.vscode/.browse.c_cpp.db*
+src/esp32cam_test/.vscode/c_cpp_properties.json
+src/esp32cam_test/.vscode/launch.json
+src/esp32cam_test/.vscode/ipch
