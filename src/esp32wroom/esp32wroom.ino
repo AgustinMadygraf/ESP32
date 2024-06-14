@@ -134,18 +134,7 @@ void calibration() { // despues de hacer la calibracion puedes borrar toda la fu
 
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println();
-  Serial.println("WiFi connected");
-
-  // Imprime la dirección IP obtenida
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  setup_web_server()
 
   // Configura los pines de salida
   pinMode(pinOutput_ENA, OUTPUT);
