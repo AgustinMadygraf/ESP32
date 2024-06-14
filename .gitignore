@@ -12,3 +12,5 @@ src/esp32cam/.vscode/c_cpp_properties.json
 src/esp32cam/.vscode/launch.json
 src/esp32cam/.vscode/ipch
 src/esp32cam/src/main.ino.cpp
+src/espwroom32_v1/.pio/
+src/espwroom32_v1/.vscode/
