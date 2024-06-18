@@ -1,7 +1,7 @@
 //balanza.h
 
 //Función calibración
-void calibration(LiquidCrystal_I2C &lcd, HX711 &balanza, int peso_calibracion, long &escala) { 
+void calibrateScale(LiquidCrystal_I2C &lcd, HX711 &balanza, int peso_calibracion, long &escala) { 
   boolean conf = true;
   long adc_lecture;
 

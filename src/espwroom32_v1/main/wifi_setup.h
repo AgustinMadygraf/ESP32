@@ -14,7 +14,7 @@ IPAddress secondaryDNS(8, 8, 4, 4);   // DNS secundario, puedes usar el de Googl
 
 WebServer server(80); // Puerto 80 para el servidor web
 
-void setup_web_server() {
+void initializeWebServer() {
   // Configura la IP estática con los DNS
   if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
     Serial.println("Falló la configuración de IP estática");

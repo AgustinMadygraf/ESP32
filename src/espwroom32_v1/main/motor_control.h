@@ -14,7 +14,7 @@ void setup_motor(int pinOutput_ENA, int pinOutput_DIR, int pinOutput_PUL) {
   digitalWrite(pinOutput_PUL, LOW); // El pulso está en estado bajo inicialmente
 }
 
-void motor_marcha(int pinOutput_ENA, int pinOutput_DIR, int pinOutput_PUL, int direction) {
+void runMotor(int pinOutput_ENA, int pinOutput_DIR, int pinOutput_PUL, int direction) {
   digitalWrite(pinOutput_ENA, LOW); // ENA se enciende con LOW
   digitalWrite(pinOutput_DIR, direction); // Direccion del motor
   for (int i = 0; i < 200; i++) {

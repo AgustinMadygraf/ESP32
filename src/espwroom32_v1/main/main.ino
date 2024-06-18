@@ -5,9 +5,9 @@
 #include <EEPROM.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
-#include "red_wifi.h"
+#include "wifi_setup.h"
 #include "balanza.h"
-#include "motor.h"
+#include "motor_control.h"
 
 // Configura los pines de salida
 const int pinOutput_ENA = 18; // enciende el motor con LOW
@@ -28,34 +28,34 @@ long escala;
 int state_zero = 0;
 int last_state_zero = 0;
 
-void handleRoot() {
+void handleRootRequest() {
   float peso_mostrar;
   peso_mostrar = balanza.get_units(10);
   server.send(200, "text/plain", "ESP32 Web Server \n Peso: " + String(peso_mostrar) + " g");
 }
 
-void handleOutputENA_f() {
+void handleMotorForward() {
   lcd.setCursor(0, 0);
   lcd.print("Motor en avance ");
   server.send(200, "text/plain", "Motor en Marcha");
-  motor_marcha(pinOutput_ENA, pinOutput_DIR, pinOutput_PUL, LOW); 
+  runMotor(pinOutput_ENA, pinOutput_DIR, pinOutput_PUL, LOW); 
 }
 
-void handleOutputENA_r() {
+void handleMotorReverse() {
   lcd.setCursor(0, 0);
   lcd.print("Motor en retroceso");
   server.send(200, "text/plain", "Motor en Reversa");
-  motor_marcha(pinOutput_ENA, pinOutput_DIR, pinOutput_PUL, HIGH); 
+  runMotor(pinOutput_ENA, pinOutput_DIR, pinOutput_PUL, HIGH); 
 }
 
 void setup() {
   Serial.begin(115200);
 
-  setup_web_server(); // Configurar y conectar al WiFi con IP estática
+  initializeWebServer(); // Configurar y conectar al WiFi con IP estática
   setup_motor(pinOutput_ENA, pinOutput_DIR, pinOutput_PUL);
-  server.on("/", handleRoot);
-  server.on("/ena_f", handleOutputENA_f);
-  server.on("/ena_r", handleOutputENA_r);
+  server.on("/", handleRootRequest);
+  server.on("/ena_f", handleMotorForward);
+  server.on("/ena_r", handleMotorReverse);
 
   server.begin();
   Serial.println("HTTP server started"); //iniciando
@@ -69,7 +69,7 @@ void setup() {
   EEPROM.get(0, escala);//Lee el valor de la escala en la EEPROM
 
   if (digitalRead(zero) == 1) { 
-      calibration(lcd, balanza, peso_calibracion, escala);
+      calibrateScale(lcd, balanza, peso_calibracion, escala);
   }
   balanza.set_scale(escala); // Establecemos la escala
   balanza.tare(20);  //El peso actual de la base es considerado zero.
